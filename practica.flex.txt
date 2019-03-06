@@ -1,0 +1,9 @@
+%%
+%standalone
+%xstate COMILLAS
+%%
+
+\" {yybegin(COMILLAS);}
+
+<COMILLAS> [^\"]+ {System.out.print(yytext());}
+<COMILLAS> \" {yybegin(YYINITIAL);}
