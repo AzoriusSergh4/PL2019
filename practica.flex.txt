@@ -5,7 +5,7 @@ import java_cup.runtime.*;
 %cup
 %%
 /*operadores*/
-"="{return new java_cup.runtime.Symbol(sym.igual, new Token(yytext(), yyline, yycolumn));}
+"=" {return new java_cup.runtime.Symbol(sym.igual, new Token(yytext(), yyline, yycolumn));}
 
 /*palabras reservadas*/
 "program" {return new java_cup.runtime.Symbol(sym.cabecera, new Token(yytext(), yyline, yycolumn));}
@@ -28,3 +28,8 @@ import java_cup.runtime.*;
 "," {return new java_cup.runtime.Symbol(sym.coma, new Token(yytext(), yyline, yycolumn));}
 "(" {return new java_cup.runtime.Symbol(sym.parentesisAbierto, new Token(yytext(), yyline, yycolumn));}
 ")" {return new java_cup.runtime.Symbol(sym.parentesisCerrado, new Token(yytext(), yyline, yycolumn));}
+
+/*comentarios*/
+"\{"[^\n]"\}" {System.out.println "Linea reconocida"; return new java_cup.runtime.Symbol(sym.comentario; new Token(yytext(), yyline, yycolumn));}
+"\(\*".*"\*\)" {System.out.println " Varias Linea reconocida"; return new java_cup.runtime.Symbol(sym.comentario_lineas; new Token(yytext(), yyline; yycolumn));}
+
