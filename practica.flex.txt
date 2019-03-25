@@ -22,7 +22,7 @@ import java_cup.runtime.*;
 
 /*separadores*/
 ";"{return new java_cup.runtime.Symbol(sym.puntoComa, new Token(yytext(), yyline, yycolumn));}
-"."{return new java_cup.runtime.Symbol(sym.punto, new Token(yytext(), yyline, yycolumn));}
+"\."{return new java_cup.runtime.Symbol(sym.punto, new Token(yytext(), yyline, yycolumn));}
 ":"{return new java_cup.runtime.Symbol(sym.dosPuntos, new Token(yytext(), yyline, yycolumn));}
 ","{return new java_cup.runtime.Symbol(sym.coma, new Token(yytext(), yyline, yycolumn));}
 "("{return new java_cup.runtime.Symbol(sym.parentesisAbierto, new Token(yytext(), yyline, yycolumn));}
