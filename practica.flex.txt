@@ -17,7 +17,11 @@ import java_cup.runtime.*;
 "function" {return new java_cup.runtime.Symbol(sym.funcion, new Token(yytext(), yyline, yycolumn));}
 "INTEGER" {return new java_cup.runtime.Symbol(sym.entero, new Token(yytext(), yyline, yycolumn));}
 "REAL" {return new java_cup.runtime.Symbol(sym.real, new Token(yytext(), yyline, yycolumn));}
+
+/*Identificadores y constantes*/
 [a-zA-Z]+([a-z]*|[A-Z]*|[0-9]*|"_")* {return new java_cup.runtime.Symbol(sym.identifier, new Token(yytext(), yyline, yycolumn));}
+[+-]?[0-9]+ {return new java_cup.runtime.Symbol(sym.constanteEntera, new Token(yytext(), yyline, yycolumn));}
+[+-]?(([0-9]+"."[0-9]+)|([0-9]+[eE][0-9]+)|([0-9]+"."[0-9]+[eE][+-]?[0-9]+))+ {return new java_cup.runtime.Symbol(sym.constanteReal, new Token(yytext(), yyline, yycolumn));}
 
 /*bucles*/
 
