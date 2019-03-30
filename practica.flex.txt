@@ -34,6 +34,6 @@ import java_cup.runtime.*;
 ")" {return new java_cup.runtime.Symbol(sym.parentesisCerrado, new Token(yytext(), yyline, yycolumn));}
 
 /*comentarios*/
-"\{"[^\n]"\}" {System.out.println "Linea reconocida"; return new java_cup.runtime.Symbol(sym.comentario; new Token(yytext(), yyline, yycolumn));}
-"\(\*".*"\*\)" {System.out.println " Varias Linea reconocida"; return new java_cup.runtime.Symbol(sym.comentario_lineas; new Token(yytext(), yyline; yycolumn));}
+"\{"[^\n]"\}" {System.out.println "Linea reconocida";}
+"\(\*".*"\*\)" {System.out.println " Varias Linea reconocida";}
 
