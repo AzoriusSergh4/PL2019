@@ -1,0 +1,419 @@
+import java_cup.runtime.*;
+import java.util.ArrayList;
+terminal op_menor, op_mayor, op_menor_igual, op_mayor_igual, op_or_doble, op_and_doble, p_if, p_else, p_while, p_do, p_until, p_buclefor, op_igual, op_mas, op_menos, op_mult, op_div, op_mod, op_not, op_igual_doble, parentesis_abierto, parentesis_cerrado, corchete_abierto, corchete_cerrado, coma, punto_y_coma, entero, real, p_define, p_v, p_return, ident, constint, constfloat, constlit;
+non terminal PROGRAM, DEFINES, CTES, PARTES, PART, RESTPART, BLQ, LISTPARAM, TYPE, SENTLIST, SENT, LID, LEXP, EXP, OP, FACTOR, LCOND, OPL, COND, OPR;
+
+precedence left op_mult, op_div, op_mod, op_mas, op_menos;
+precedence left op_or_doble, op_and_doble;
+
+start with PROGRAM;
+PROGRAM ::= DEFINES:defval PARTES:partval{:
+    ArrayList<Funcion> listfun = (ArrayList<Funcion>) partval;
+    Funcion pr = listfun.remove(listfun.size()-1);
+    ArrayList<Linea> aux = (ArrayList<Linea>) defval;
+    Constantes constantes = new Constantes(aux);
+    Programa p = new Programa(listfun,pr);
+    p.setConstantes(constantes);
+    p.imprime();
+    RESULT = p;
+:};
+DEFINES ::= p_define ident:idval CTES:cteval DEFINES:defvalor{:
+    ArrayList<Linea> lineas = new ArrayList();
+    Elemento igual = new Elemento("= ","sin_tipo");
+    Elemento n = new Elemento(";","sin_tipo");
+    Token t = (Token) idval;
+    Elemento id = new Elemento(t.getValor(),"id");
+    Elemento valor_cte = (Elemento)cteval;
+    ArrayList<Linea> laux = (ArrayList<Linea>) defvalor;
+    ArrayList<Elemento> elem = new ArrayList();
+    elem.add(id);
+    elem.add(igual);
+    elem.add(valor_cte);
+    elem.add(n);
+    Linea l = new Linea(elem,"constante");
+    lineas.add(l);
+    lineas.addAll(laux);
+    RESULT = lineas;
+    :} 
+        | {:
+            ArrayList<Linea> l = new ArrayList();
+            RESULT = l;
+            :};
+
+CTES ::= constint:cteint {:
+            Token t = (Token) cteint;
+            Elemento e = new Elemento(t.getValor(),"valor_int");
+            RESULT = e;
+        :} 
+            | constfloat:ctefloat{:
+                Token t = (Token) ctefloat;
+                Elemento e = new Elemento(t.getValor(),"valor_float");
+                RESULT = e;
+            :}  
+                | constlit:ctelit{:
+                    Token t = (Token) ctelit;
+                    Elemento e = new Elemento(t.getValor(),"valor_lit");
+                    RESULT = e;
+                :} ;
+
+PARTES ::= PART:f PARTES:list_f {:
+    Funcion fun = (Funcion) f;
+    ArrayList<Funcion> lista_funciones = new ArrayList();
+    ArrayList<Funcion> aux = (ArrayList<Funcion>) list_f;
+    lista_funciones.add(fun);
+    lista_funciones.addAll(aux);
+    RESULT = lista_funciones;
+:}
+    | PART:f{:
+        Funcion fun = (Funcion) f;
+        ArrayList<Funcion> lista_funciones = new ArrayList();
+        lista_funciones.add(fun);
+        RESULT = lista_funciones;
+    :};
+
+PART ::= TYPE:tipo RESTPART:restpartval{:
+    Funcion f = (Funcion) restpartval;
+    Cabecera cab = f.getCabecera();
+    Elemento tip = (Elemento) tipo;
+    cab.setTipo(tip);
+    f.setCabecera(cab);
+    RESULT = f;
+:};
+
+RESTPART ::= ident:idval parentesis_abierto LISTPARAM:listparamaval parentesis_cerrado BLQ:blqval {:
+    ArrayList<Elemento> elem = new ArrayList();
+    ArrayList<Elemento> paramInt = new ArrayList();
+    ArrayList<Elemento> paramReal = new ArrayList();
+    Elemento coma = new Elemento(",","sin_tipo");
+    ArrayList<Elemento> aux = (ArrayList<Elemento>) listparamaval;
+    for(Elemento a:aux){
+        if(a.getTipo()=="INTEGER"){
+            paramInt.add(a);
+            paramInt.add(coma);
+        }else if(a.getTipo()=="REAL"){
+            paramReal.add(a);
+            paramReal.add(coma);
+        }
+    }
+    if(paramInt.size()>0){
+        paramInt.remove(paramInt.size()-1);
+    }
+    if(paramReal.size()>0){
+        paramReal.remove(paramReal.size()-1);
+    }
+
+    Token t = (Token) idval;
+    Elemento e = new Elemento(t.getValor(),"id");
+    elem.add(e);
+    Elemento paux = new Elemento("(","sin_tipo");
+    elem.add(paux);
+
+    //Tratamiento de los parametros
+    Elemento i = new Elemento("INTEGER","sin_tipo");
+    Elemento r = new Elemento("REAL","sin_tipo");
+    Elemento dos_puntos = new Elemento(":","sin_tipo");
+    if(paramInt.size()!=0){
+        paramInt.add(dos_puntos);
+        paramInt.add(i);
+        elem.addAll(paramInt);
+    }
+    if(paramInt.size()!=0 && paramReal.size()!=0){
+        Elemento punt_coma = new Elemento(";","sin_tipo");
+        elem.add(punt_coma);
+    }
+    if(paramReal.size()!=0){
+        paramReal.add(dos_puntos);
+        paramReal.add(r);
+        elem.addAll(paramReal);
+    }
+
+    paux = new Elemento(")","sin_tipo");
+    elem.add(paux);
+    Cabecera cab = new Cabecera(elem);
+    ArrayList<Linea> auxblq= (ArrayList<Linea>) blqval;
+    ArrayList<Linea> lcuerpo = new ArrayList();
+    ArrayList<Linea> lvariables = new ArrayList();
+    for(Linea l:auxblq){
+        if(l.getTipo()=="declaracion_variable"){
+            lvariables.add(l);
+        }else{
+            lcuerpo.add(l);
+        }
+    }
+    Cuerpo cuerpo = new Cuerpo(lcuerpo);
+    cuerpo.setNombre(e);
+    Variables variables = new Variables(lvariables);
+    Funcion f = new Funcion(cab,cuerpo,variables);
+    f.setNombre(t.getValor());
+    RESULT = f;
+    :}
+        | ident:idval parentesis_abierto p_v parentesis_cerrado BLQ:blqval{:
+            ArrayList<Elemento> elem = new ArrayList();
+            Token t = (Token) idval;
+            Elemento e = new Elemento(t.getValor(),"id");
+            elem.add(e);
+            Cabecera cab = new Cabecera(elem);
+            ArrayList<Linea> aux= (ArrayList<Linea>) blqval;
+            ArrayList<Linea> lcuerpo = new ArrayList();
+            ArrayList<Linea> lvariables = new ArrayList();
+            for(Linea l:aux){
+                if(l.getTipo()=="declaracion_variable"){
+                    lvariables.add(l);
+                }else{
+                    lcuerpo.add(l);
+                }
+            }
+            Cuerpo cuerpo = new Cuerpo(lcuerpo);
+            cuerpo.setNombre(e);
+            Variables variables = new Variables(lvariables);
+            Funcion f = new Funcion(cab,cuerpo,variables);
+            f.setNombre(t.getValor());
+            RESULT = f;
+        :};
+BLQ ::= corchete_abierto SENTLIST:lista corchete_cerrado{:
+    ArrayList<Linea> l = (ArrayList<Linea>) lista;
+    RESULT = l;
+:};
+
+LISTPARAM ::= LISTPARAM:listparamaval coma TYPE:tipo ident:idval {:
+        ArrayList<Elemento> l = new ArrayList();
+        ArrayList<Elemento> aux = (ArrayList<Elemento>) listparamaval;
+        Token t = (Token) idval;
+        Elemento tip = (Elemento) tipo;
+        Elemento e = new Elemento(t.getValor(),tip.getValor());
+        l.add(e);
+        l.addAll(aux);
+        RESULT = l;
+    :}
+        | TYPE:tipo ident:idval{:
+            ArrayList<Elemento> l = new ArrayList();
+            Token t = (Token) idval;
+            Elemento tip = (Elemento) tipo;
+            Elemento e = new Elemento(t.getValor(),tip.getValor());
+            l.add(e);
+            RESULT = l;
+        :};
+
+TYPE ::= entero{:
+            Elemento e = new Elemento("INTEGER","sin_tipo");
+            RESULT = e;
+        :} 
+            | p_v {:
+                    Elemento e = new Elemento("void","sin_tipo");
+                    RESULT = e;
+                :} 
+                    |real{:
+                        Elemento e = new Elemento("REAL","sin_tipo");
+                        RESULT = e;
+                    :} ;
+
+SENTLIST ::= SENTLIST:lineas1 SENT:l {:
+        ArrayList<Linea> lineas = new ArrayList();
+        ArrayList<Linea> aux = (ArrayList<Linea>) lineas1;
+        ArrayList<Linea> aux2 = (ArrayList<Linea>) l;
+        lineas.addAll(aux);
+        lineas.addAll(aux2); 
+        RESULT = lineas;
+    :}
+        | SENT:l{:
+            ArrayList<Linea> lineas = (ArrayList<Linea>) l;
+            RESULT = l;
+        :};
+
+SENT ::= TYPE:tipo LID:lidval punto_y_coma {:
+        ArrayList<Elemento> elem = new ArrayList();
+        ArrayList<Elemento> aux = (ArrayList<Elemento>) lidval;
+        Elemento t = (Elemento) tipo;
+        Elemento d = new Elemento(":","sin_tipo");
+        Elemento c = new Elemento(";","sin_tipo");
+        elem.addAll(aux);
+        elem.add(d);
+        elem.add(t);
+        elem.add(c);
+        Linea l = new Linea(elem,"declaracion_variable");
+        l.setTipo_variable(t.getValor());
+        ArrayList<Linea> ll = new ArrayList();
+        ll.add(l);
+        RESULT = ll;
+    :}
+        | ident:idval op_igual EXP:expval punto_y_coma{:
+                Token t = (Token) idval;
+                Elemento asig = new Elemento(":=","sin_tipo");
+                Elemento e = new Elemento(t.getValor(),"id");
+                Elemento c = new Elemento(";","sin_tipo");
+                ArrayList<Elemento> elem = new ArrayList();
+                ArrayList<Elemento> aux = (ArrayList<Elemento>) expval;
+                elem.add(e);
+                elem.add(asig);
+                elem.addAll(aux);
+                elem.add(c);
+                Linea l = new Linea(elem,"cuerpo");
+                ArrayList<Linea> ll = new ArrayList();
+                ll.add(l);
+                RESULT = ll;
+            :} 
+                | ident:idval parentesis_abierto LEXP:lexpval parentesis_cerrado punto_y_coma{:
+                    Token t = (Token) idval;
+                    Elemento e = new Elemento(t.getValor(),"id");
+                    ArrayList<Elemento> aux = (ArrayList<Elemento>) lexpval;
+                    Elemento p1 = new Elemento("(","sin_tipo");
+                    Elemento p2 = new Elemento(")","sin_tipo");
+                    Elemento c = new Elemento(";","sin_tipo");
+                    ArrayList<Elemento> elem = new ArrayList();
+                    elem.add(e);
+                    elem.add(p1);
+                    elem.addAll(aux);
+                    elem.add(p2);
+                    elem.add(c);
+                    Linea l = new Linea(elem,"cuerpo");
+                    ArrayList<Linea> ll = new ArrayList();
+                    ll.add(l);
+                    RESULT = ll;
+                :} 
+                    | ident:idval parentesis_abierto parentesis_cerrado punto_y_coma{:
+                        Token t = (Token) idval;
+                        Elemento e = new Elemento(t.getValor(),"id");
+                        Elemento c = new Elemento(";","sin_tipo");
+                        ArrayList<Elemento> elem = new ArrayList();
+                        elem.add(e);
+                        elem.add(c);
+                        Linea l = new Linea(elem,"cuerpo");
+                        ArrayList<Linea> ll = new ArrayList();
+                        ll.add(l);
+                        RESULT = ll;
+                    :} 
+                        | p_return EXP:expval punto_y_coma {:
+                            ArrayList<Elemento> elem = new ArrayList();
+                            ArrayList<Elemento> aux = (ArrayList<Elemento>) expval;
+                            Elemento e = new Elemento (":=","sin_tipo");
+                            elem.add(e);
+                            elem.addAll(aux);
+                            e = new Elemento(";","puntoycoma");
+                            elem.add(e);
+                            Linea l = new Linea(elem,"cuerpo");
+                            l.setTieneReturn(true);
+                            ArrayList<Linea> ll = new ArrayList();
+                            ll.add(l);
+                            RESULT = ll;
+                        :}
+                            | p_if parentesis_abierto LCOND parentesis_cerrado BLQ p_else BLQ 
+                                | p_while parentesis_abierto LCOND parentesis_cerrado BLQ 
+                                    | p_do BLQ p_until parentesis_abierto LCOND parentesis_cerrado 
+                                        | p_buclefor parentesis_abierto ident op_igual EXP punto_y_coma LCOND punto_y_coma ident op_igual EXP parentesis_cerrado BLQ;
+
+LID ::= ident:idval{:
+        Token t = (Token) idval;
+        Elemento e = new Elemento(t.getValor(),"id");
+        ArrayList<Elemento> l = new ArrayList();
+        l.add(e);
+        RESULT = l;
+    :} 
+        | LID:lidval coma ident:idval{:
+            Token t = (Token) idval;
+            Elemento e = new Elemento(t.getValor(),"id");
+            Elemento c = new Elemento(",","sin_tipo");
+            ArrayList<Elemento> aux = (ArrayList<Elemento>)lidval;
+            ArrayList<Elemento> elem = new ArrayList();
+            elem.addAll(aux);
+            elem.add(c);
+            elem.add(e);
+            RESULT = elem;
+        :};
+LEXP ::= EXP:expval {:
+        ArrayList<Elemento> elem =(ArrayList<Elemento>) expval;
+        RESULT = elem;
+    :} 
+        | LEXP:lexpval coma EXP:expval{:
+            ArrayList<Elemento> aux = (ArrayList<Elemento>) lexpval;
+            ArrayList<Elemento> aux2 = (ArrayList<Elemento>) expval;
+            Elemento c = new Elemento(",","sin_tipo");
+            aux.add(c);
+            aux.addAll(aux2);
+            RESULT = aux;
+        :};
+
+EXP ::= EXP:exp1 OP:opval EXP:exp2 {:
+    ArrayList<Elemento> lista = new ArrayList();
+    ArrayList<Elemento> exp = (ArrayList<Elemento>) exp1;
+    lista.addAll(exp);
+    Elemento op = (Elemento) opval;
+    lista.add(op);
+    exp = (ArrayList<Elemento>) exp2;
+    lista.addAll(exp);
+    RESULT = lista;
+    :}
+        | FACTOR:facval {:
+            ArrayList<Elemento> l = (ArrayList<Elemento>) facval;
+            RESULT = l;
+        :};
+OP ::= op_mas {:
+            Elemento e = new Elemento("+","sin_tipo");
+            RESULT = e;
+        :} 
+            | op_menos {:
+                    Elemento e = new Elemento("-","sin_tipo");
+                    RESULT = e;
+            :} 
+                | op_mult {:
+                        Elemento e = new Elemento("*","sin_tipo");
+                        RESULT = e;
+                :} 
+                    | op_div {:
+                            Elemento e = new Elemento("div","sin_tipo");
+                            RESULT = e;
+                    :} 
+                        | op_mod{:
+                                Elemento e = new Elemento("mod","sin_tipo");
+                                RESULT = e;
+                        :} ;
+
+FACTOR ::= ident:idval parentesis_abierto LEXP:lexpval parentesis_cerrado {:
+        Token t = (Token) idval;
+        Elemento e = new Elemento(t.getValor(),"id");
+        ArrayList<Elemento> aux = (ArrayList<Elemento>) lexpval;
+        Elemento p1 = new Elemento("(","sin_tipo");
+        Elemento p2 = new Elemento(")","sin_tipo");
+        ArrayList<Elemento> elem = new ArrayList();
+        elem.add(e);
+        elem.add(p1);
+        elem.addAll(aux);
+        elem.add(p2);
+        RESULT = elem;
+    :}
+        | ident:idval parentesis_abierto parentesis_cerrado {:
+            Token t = (Token) idval;
+            Elemento e = new Elemento(t.getValor(),"id");
+            ArrayList<Elemento> elem = new ArrayList();
+            elem.add(e);
+            RESULT = elem;
+            :}
+                | parentesis_abierto EXP:expval parentesis_cerrado{:
+                    ArrayList<Elemento> aux = (ArrayList<Elemento>) expval;
+                    ArrayList<Elemento> elem = new ArrayList();
+                    Elemento a = new Elemento("(","sin_tipo");
+                    Elemento b = new Elemento(")","sin_tipo");
+                    elem.add(a);
+                    elem.addAll(aux);
+                    elem.add(b);
+                    RESULT = elem;
+                :} 
+                    | ident:idval {:
+                        Token t = (Token) idval;
+                        Elemento e = new Elemento(t.getValor(),"id");
+                        ArrayList<Elemento> l = new ArrayList();
+                        l.add(e);
+                        RESULT = l;
+                    :}
+                        | CTES:cteval {:
+                        Elemento e = (Elemento)cteval;
+                        ArrayList<Elemento> l = new ArrayList();
+                        l.add(e);
+                        RESULT = l;
+                    :};
+
+LCOND ::= LCOND OPL LCOND | COND | op_not COND;
+OPL ::= op_or_doble | op_and_doble;
+COND ::= EXP OPR EXP;
+OPR ::= op_igual_doble | op_menor | op_mayor | op_mayor_igual | op_menor_igual;
+
+
