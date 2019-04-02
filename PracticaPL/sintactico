@@ -1,0 +1,1 @@
+java -jar java-cup/java-cup-11b.jar src/analyzers/aSintactico.cup

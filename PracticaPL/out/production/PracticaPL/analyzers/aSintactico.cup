@@ -1,0 +1,105 @@
+package analyzers;
+import java_cup.runtime.Symbol;
+
+parser code{:
+    public void syntax_error(Symbol s){
+        try{
+            Token token = (Token)s.value;
+
+            String lex = token.getLex();
+            int line = token.getLine();
+            int column = token.getColumn();
+
+            System.out.println("Error sintactico capturado");
+            System.out.println("\t\tLexema: " + lex);
+            System.out.println("\t\tFila: " + line);
+            System.out.println("\t\tColumna: " + column);
+        }catch(NullPointerException e){System.out.println("Error sintáctico: falta el último símbolo");}
+    }
+
+    public void unrecovered_syntax_error(Symbol s){
+         try{
+             Token token = (Token)s.value;
+
+             String lex = token.getLex();
+             int line = token.getLine();
+             int column = token.getColumn();
+
+             System.out.println("Error sintactico capturado");
+             System.out.println("\t\tLexema: " + lex);
+             System.out.println("\t\tFila: " + line);
+             System.out.println("\t\tColumna: " + column);
+         }catch(NullPointerException e){System.out.println("Error sintáctico: falta el último símbolo");}
+    }
+:}
+
+action code{:
+
+:}
+
+
+terminal cabecera, igual, identifier, constanteEntera, punto, puntoComa, dosPuntos, coma, parentesisAbierto, parentesisCerrado,
+            fin, var, constanteReal, real, inicio, constant, entero, funcion, procedimiento, asignacion, suma, resta, producto, division,
+            modulo, condMayor, condMenor, condMenorIgual, condMayorIgual, negacion, si, sino, entonces, mientras, hacer, repite, hasta,
+            para, hastaArriba, hastaAbajo, paquete, condO, condY;
+
+non terminal INITIAL, PRG, BLQ, DCLLIST, DCL, DEFCTE, CTELIST, SIMPVALUE, DEFVAR, DEFVARLIST, VARLIST, TBAS, DEFPROC, FORMAL_PARAMLIST,
+             FORMAL_PARAM, DEFFUN, SENTLIST, SENT, ASIG, EXP, FACTOR, OP, OPARIT, PROC_CALL, SUBPARAMLIST, EXPLIST, EXPCOND, OPLOG, FACTORCOND,
+             OPCOMP, INC;
+
+precedence left suma, resta, condO;
+precedence left producto, division, modulo, condY;
+
+start with INITIAL;
+
+INITIAL ::= PRG;
+
+PRG ::= cabecera identifier puntoComa BLQ punto | paquete identifier puntoComa DCLLIST punto;
+BLQ ::= DCLLIST inicio SENTLIST fin;
+DCLLIST ::= DCLLIST DCL |;
+DCL ::= DEFCTE | DEFVAR | DEFPROC | DEFFUN;
+
+DEFCTE ::= constant CTELIST;
+CTELIST ::= identifier igual SIMPVALUE puntoComa
+            | CTELIST identifier igual SIMPVALUE puntoComa;
+SIMPVALUE ::= constanteReal | constanteEntera;
+
+DEFVAR ::= var DEFVARLIST puntoComa;
+DEFVARLIST ::= VARLIST dosPuntos TBAS
+            | DEFVARLIST puntoComa VARLIST dosPuntos TBAS;
+VARLIST ::= identifier | identifier coma VARLIST;
+
+DEFPROC ::= procedimiento identifier FORMAL_PARAMLIST puntoComa BLQ puntoComa;
+DEFFUN ::= funcion identifier FORMAL_PARAMLIST dosPuntos TBAS puntoComa BLQ puntoComa;
+
+FORMAL_PARAMLIST ::= parentesisAbierto FORMAL_PARAM parentesisCerrado |;
+FORMAL_PARAM ::= VARLIST dosPuntos TBAS | VARLIST dosPuntos TBAS puntoComa FORMAL_PARAM;
+
+TBAS ::= entero | real;
+
+SENTLIST ::= SENT | SENTLIST SENT;
+
+INC ::= hastaArriba | hastaAbajo;
+
+SENT ::= ASIG puntoComa
+        | PROC_CALL puntoComa
+        | si EXPCOND entonces BLQ sino BLQ
+        | mientras EXPCOND hacer BLQ
+        | repite BLQ hasta EXPCOND puntoComa
+        | para identifier asignacion EXP INC EXP hacer BLQ;
+
+PROC_CALL ::= identifier SUBPARAMLIST;
+SUBPARAMLIST ::= parentesisAbierto EXPLIST parentesisCerrado |;
+EXPLIST ::= EXP | EXP coma EXPLIST;
+
+ASIG ::= identifier asignacion EXP;
+EXP ::= EXP OP EXP | FACTOR;
+OP ::= OPARIT;
+OPARIT ::= suma | resta | producto | division | modulo;
+FACTOR ::= SIMPVALUE | parentesisAbierto EXP parentesisCerrado | PROC_CALL;
+
+EXPCOND ::= EXPCOND OPLOG EXPCOND | FACTORCOND;
+OPLOG ::= condO | condY;
+FACTORCOND ::= EXP OPCOMP EXP | parentesisAbierto EXP parentesisCerrado | negacion FACTORCOND;
+OPCOMP ::= condMenor | condMayor | condMayorIgual | condMenorIgual | igual;
+
