@@ -47,8 +47,9 @@ non terminal INITIAL, PRG, BLQ, DCLLIST, DCL, DEFCTE, CTELIST, SIMPVALUE, DEFVAR
              FORMAL_PARAM, DEFFUN, SENTLIST, SENT, ASIG, EXP, FACTOR, OP, OPARIT, PROC_CALL, SUBPARAMLIST, EXPLIST, EXPCOND, OPLOG, FACTORCOND,
              OPCOMP, INC;
 
-precedence left suma, resta, condO;
-precedence left producto, division, modulo, condY;
+precedence left condO, condY; 
+precedence left suma, resta;
+precedence left producto, division, modulo;
 
 start with INITIAL;
 
