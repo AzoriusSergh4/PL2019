@@ -1,0 +1,25 @@
+program test3bad;
+
+const id = 1;
+
+var aux, aux2: INTEGER;
+var tet: REAL;
+
+procedure proceso(p,q,r: INTEGER; s: REAL);
+
+	p := 3;
+end;
+
+function funcionP(p,q,r: INTEGER; s:REAL): INTEGER;
+begin
+	q := 2 + funcionP(2,3,4)
+
+
+begin
+
+	id := 2 + (2 * 4);
+end.
+
+
+
+/*Tiene que haber 3 errores: faltan: 1 begin, 1 end y 1 ;*/

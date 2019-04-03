@@ -1,0 +1,19 @@
+program test4bad;
+
+const id = 100;
+
+var aux, resultado: INTEGER;
+
+
+begin
+
+aux:= 50;
+resultado:= 100;
+
+if (id = aux) then
+	resultado:= ((resultado div 50) * 30) - 500 + 10;
+else
+	resultado:= 10101110;
+end.
+
+/*Tiene que haber 1 error: sobra ; antes del else*/

@@ -1,0 +1,19 @@
+program test1bad;
+
+
+var contador: INTEGER;
+
+
+begin
+
+contador:= 0;
+
+while (contador >.< 10) do
+	begin
+	contador:= contador + 1;
+	end;
+
+
+end.
+
+/*Error en la línea del While*/

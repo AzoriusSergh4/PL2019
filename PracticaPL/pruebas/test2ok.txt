@@ -1,0 +1,19 @@
+program test2ok;
+
+
+var contador, resultado: INTEGER;
+
+
+begin
+
+contador:= 0;
+resultado:= 0;
+
+repeat
+	begin
+	contador:= contador + 1;
+	resultado:= resultado + ((contador * 4) div 2);
+	end;
+
+until (contador >= 10);
+end.
