@@ -1,21 +1,12 @@
 program examen;
 
-const id = 1;
-
-var aux, aux2: INTEGER;
-var tet: REAL;
-
-procedure proceso(p,q,r: INTEGER; s: REAL);
 begin
-	p := 3;
-end;
-
-function funcionP(p,q,r: INTEGER; s:REAL): INTEGER;
-begin
-	q := 2 + funcionP(2,3,4);
-end;
-
-begin
-
-	id := 2 + (2 * 4);
+	if 4 > 2 then
+	begin
+		id := 2 + (2 * 4);
+	end
+	else
+	begin
+		id := 1;
+	end
 end.
