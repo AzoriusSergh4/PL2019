@@ -15,5 +15,3 @@ if (id = aux) then
 else
 	resultado:= 10101110;
 end.
-
-/*Tiene que haber 1 error: sobra ; antes del else*/
