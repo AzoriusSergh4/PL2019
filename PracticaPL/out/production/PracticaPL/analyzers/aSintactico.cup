@@ -47,33 +47,35 @@ non terminal INITIAL, PRG, BLQ, DCLLIST, DCL, DEFCTE, CTELIST, SIMPVALUE, DEFVAR
              FORMAL_PARAM, DEFFUN, SENTLIST, SENT, ASIG, EXP, FACTOR, OP, OPARIT, PROC_CALL, SUBPARAMLIST, EXPLIST, EXPCOND, OPLOG, FACTORCOND,
              OPCOMP, INC;
 
-precedence left suma, resta, condO;
-precedence left producto, division, modulo, condY;
+precedence left condO, condY; 
+precedence left suma, resta;
+precedence left producto, division, modulo;
 
 start with INITIAL;
 
 INITIAL ::= PRG;
 
-PRG ::= cabecera identifier puntoComa BLQ punto | paquete identifier puntoComa DCLLIST punto;
+PRG ::= cabecera identifier puntoComa BLQ punto | paquete identifier puntoComa DCLLIST punto | error puntoComa;
 BLQ ::= DCLLIST inicio SENTLIST fin;
 DCLLIST ::= DCLLIST DCL |;
 DCL ::= DEFCTE | DEFVAR | DEFPROC | DEFFUN;
 
-DEFCTE ::= constant CTELIST;
+DEFCTE ::= constant CTELIST | error CTELIST;
 CTELIST ::= identifier igual SIMPVALUE puntoComa
-            | CTELIST identifier igual SIMPVALUE puntoComa;
+            | CTELIST identifier igual SIMPVALUE puntoComa
+			| error puntoComa;
 SIMPVALUE ::= constanteReal | constanteEntera;
 
 DEFVAR ::= var DEFVARLIST puntoComa;
 DEFVARLIST ::= VARLIST dosPuntos TBAS
-            | DEFVARLIST puntoComa VARLIST dosPuntos TBAS;
+            | DEFVARLIST puntoComa VARLIST dosPuntos TBAS | error puntoComa;
 VARLIST ::= identifier | identifier coma VARLIST;
 
-DEFPROC ::= procedimiento identifier FORMAL_PARAMLIST puntoComa BLQ puntoComa;
+DEFPROC ::= procedimiento identifier FORMAL_PARAMLIST puntoComa BLQ puntoComa | error puntoComa;
 DEFFUN ::= funcion identifier FORMAL_PARAMLIST dosPuntos TBAS puntoComa BLQ puntoComa;
 
 FORMAL_PARAMLIST ::= parentesisAbierto FORMAL_PARAM parentesisCerrado |;
-FORMAL_PARAM ::= VARLIST dosPuntos TBAS | VARLIST dosPuntos TBAS puntoComa FORMAL_PARAM;
+FORMAL_PARAM ::= VARLIST dosPuntos TBAS | VARLIST dosPuntos TBAS puntoComa FORMAL_PARAM | error parentesisCerrado;
 
 TBAS ::= entero | real;
 
@@ -86,11 +88,12 @@ SENT ::= ASIG puntoComa
         | si EXPCOND entonces BLQ sino BLQ
         | mientras EXPCOND hacer BLQ
         | repite BLQ hasta EXPCOND puntoComa
-        | para identifier asignacion EXP INC EXP hacer BLQ;
+        | para identifier asignacion EXP INC EXP hacer BLQ
+		| error puntoComa | error fin;
 
 PROC_CALL ::= identifier SUBPARAMLIST;
 SUBPARAMLIST ::= parentesisAbierto EXPLIST parentesisCerrado |;
-EXPLIST ::= EXP | EXP coma EXPLIST;
+EXPLIST ::= EXP | EXP coma EXPLIST | error parentesisCerrado;
 
 ASIG ::= identifier asignacion EXP;
 EXP ::= EXP OP EXP | FACTOR;
@@ -100,6 +103,6 @@ FACTOR ::= SIMPVALUE | parentesisAbierto EXP parentesisCerrado | PROC_CALL;
 
 EXPCOND ::= EXPCOND OPLOG EXPCOND | FACTORCOND;
 OPLOG ::= condO | condY;
-FACTORCOND ::= EXP OPCOMP EXP | parentesisAbierto EXP parentesisCerrado | negacion FACTORCOND;
+FACTORCOND ::= EXP OPCOMP EXP | parentesisAbierto EXP parentesisCerrado | negacion FACTORCOND | error parentesisCerrado;
 OPCOMP ::= condMenor | condMayor | condMayorIgual | condMenorIgual | igual;
 
