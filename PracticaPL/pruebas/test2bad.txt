@@ -16,5 +16,3 @@ repeating
 
 until (contador >= 10);
 end.
-
-/* Tiene que haber un error: repeating no existe en Pascal*/
