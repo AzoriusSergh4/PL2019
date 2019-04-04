@@ -19,7 +19,3 @@ begin
 
 	id := 2 + (2 * 4);
 end.
-
-
-
-/*Tiene que haber 3 errores: faltan: 1 begin, 1 end y 1 ;*/
