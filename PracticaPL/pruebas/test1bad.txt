@@ -15,5 +15,3 @@ while (contador >.< 10) do
 
 
 end.
-
-/*Error en la línea del While*/
