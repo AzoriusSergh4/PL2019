@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="PL2019:jar">
+    <output-path>$PROJECT_DIR$/PracticaPL/out/artifacts/PL2019_jar</output-path>
+    <root id="archive" name="PL2019.jar">
+      <element id="module-output" name="PL2019" />
+      <element id="file-copy" path="$PROJECT_DIR$/PracticaPL/java-cup/java-cup-11b-runtime.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/PracticaPL/java-cup/java-cup-11b.jar" />
+    </root>
+  </artifact>
+</component>

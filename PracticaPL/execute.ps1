@@ -1,2 +1,1 @@
-Copy-Item out/artifacts/PracticaPL_jar/PracticaPL.jar pruebas/PracticaPL.jar
-java -jar pruebas/PracticaPL.jar pruebas/prueba.txt
+Copy-Item out/artifacts/PL2019_jar/PL2019.jar pruebas/PL2019.jar

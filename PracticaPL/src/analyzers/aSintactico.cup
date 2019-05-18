@@ -1,7 +1,9 @@
 package analyzers;
 import java_cup.runtime.Symbol;
+import java.io.*;
 
 parser code{:
+    public Converter c = new Converter();
     public void syntax_error(Symbol s){
         try{
             Token token = (Token)s.value;
@@ -53,7 +55,7 @@ precedence left producto, division, modulo;
 
 start with INITIAL;
 
-INITIAL ::= PRG;
+INITIAL ::= PRG {:c.bw.write("Cosas");:};
 
 PRG ::= cabecera identifier puntoComa BLQ punto | paquete identifier puntoComa DCLLIST punto | error puntoComa;
 BLQ ::= DCLLIST inicio SENTLIST fin;

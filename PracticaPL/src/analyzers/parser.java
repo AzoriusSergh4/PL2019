@@ -6,6 +6,7 @@
 package analyzers;
 
 import java_cup.runtime.Symbol;
+import java.io.*;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -352,6 +353,7 @@ public class parser extends java_cup.runtime.lr_parser {
 
 
 
+    public Converter c = new Converter();
     public void syntax_error(Symbol s){
         try{
             Token token = (Token)s.value;
@@ -429,7 +431,7 @@ class CUP$parser$actions {
           case 1: // INITIAL ::= PRG 
             {
               Object RESULT =null;
-
+		c.bw.write("Cosas");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("INITIAL",0, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
