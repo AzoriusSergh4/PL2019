@@ -55,7 +55,7 @@ precedence left producto, division, modulo;
 
 start with INITIAL;
 
-INITIAL ::= PRG {:c.bw.write("Cosas");:};
+INITIAL ::= PRG {:c.bw.write("Cosassssssss");:};
 
 PRG ::= cabecera identifier puntoComa BLQ punto | paquete identifier puntoComa DCLLIST punto | error puntoComa;
 BLQ ::= DCLLIST inicio SENTLIST fin;

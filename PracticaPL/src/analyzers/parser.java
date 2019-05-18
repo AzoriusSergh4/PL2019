@@ -431,7 +431,7 @@ class CUP$parser$actions {
           case 1: // INITIAL ::= PRG 
             {
               Object RESULT =null;
-		c.bw.write("Cosas");
+		c.bw.write("Cosassssssss");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("INITIAL",0, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

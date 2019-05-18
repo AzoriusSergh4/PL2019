@@ -21,14 +21,15 @@ public class Analizador{
                             new Lexico( new java.io.FileReader(argv[i]));
                     parser sintactico = new parser(lexico);
                     sintactico.parse();
+
                     sintactico.c.bw.close();
                     File out = sintactico.c.file;
-                    out.renameTo(new File(name + ".c"));
-                    if(out.createNewFile()){
-                        System.out.println("Creado");
-                    }else{
-                        System.out.println("No creado");
+                    File compiled = new File(name + ".c");
+                    if(compiled.exists()){
+                        compiled.delete();
                     }
+                    out.renameTo(compiled);
+
                 }
                 catch (java.io.FileNotFoundException e) {
                     System.out.println("Archivo \""+argv[i]+"\" no encontrado.");
