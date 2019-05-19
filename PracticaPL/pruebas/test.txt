@@ -5,6 +5,16 @@ const tec = 4; rec = 2;
 var a,b,c: INTEGER;
 var d,e,f: REAL;
 
+procedure proc ( c:REAL; d:INTEGER);
+begin
+	c := 1 + 2;
+end;
+
+function func ( c:REAL; d:INTEGER):INTEGER;
+begin
+	c := 1 + 2;
+end;
+
 begin
 	cosas := 3 + 2;
 end.

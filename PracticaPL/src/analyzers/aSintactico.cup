@@ -62,15 +62,25 @@ PRG ::= cabecera identifier puntoComa BLQ:blq punto {: Bloque b = (Bloque)blq; R
             | paquete identifier puntoComa DCLLIST punto
             | error puntoComa;
 BLQ ::= DCLLIST:dcl inicio SENTLIST:sent fin{:
-                Bloque blq = new Bloque((String)dcl, globalVariables, (String)sent);
+                DCLList d = (DCLList)dcl;
+                Bloque blq = new Bloque(d.getDcllists(), d.getVarslist(), (String)sent);
                 RESULT = blq;
                 :};
-DCLLIST ::= DCLLIST:dcllist DCL:dcl {:RESULT = (String)dcllist + (String)dcl; :}
-        |{: RESULT = ""; :};
+DCLLIST ::= DCLLIST:dcllist DCL:dcl {:
+           DCLList d = (DCLList)dcllist;
+           if(dcl instanceof Variable){
+                Variable v = (Variable)dcl;
+                d.setVarslist(d.getVarslist() + v.getVars());
+           }else{
+                d.setDcllists(d.getDcllists() + (String)dcl);
+           }
+           RESULT = d;
+        :}
+        |{: RESULT = new DCLList("",""); :};
 DCL ::= DEFCTE:def {: RESULT = def; :}
-        | DEFVAR:vars {: globalVariables = globalVariables + (String)vars; RESULT = "";:}
-        | DEFPROC
-        | DEFFUN;
+        | DEFVAR:vars {: Variable v = new Variable((String)vars); RESULT = v;:}
+        | DEFPROC:proc {: RESULT = proc; :}
+        | DEFFUN:fun {: RESULT = fun; :};
 
 DEFCTE ::= constant CTELIST:cte {: RESULT = cte; :}
         | error CTELIST;
@@ -93,17 +103,29 @@ DEFVARLIST ::= VARLIST:list dosPuntos TBAS:type {: RESULT = "\t" + (String)type 
 VARLIST ::= identifier:id {: Token token = (Token)id; RESULT = token.getLex(); :}
             | identifier:id coma VARLIST:list {: Token token = (Token)id; RESULT = token.getLex() + ", " + list; :};
 
-DEFPROC ::= procedimiento identifier FORMAL_PARAMLIST puntoComa BLQ puntoComa | error puntoComa;
-DEFFUN ::= funcion identifier FORMAL_PARAMLIST dosPuntos TBAS puntoComa BLQ puntoComa;
+DEFPROC ::= procedimiento identifier:id FORMAL_PARAMLIST:params puntoComa BLQ:blq puntoComa {:
+            Bloque b = (Bloque)blq;
+            Token i = (Token)id;
+            RESULT = "void " + i.getLex() + " " + params + "\n{\n" + b.getDcl() + b.getVariable() + b.getSent() + "}\n";
+        :}
+        | error puntoComa;
+DEFFUN ::= funcion identifier:id FORMAL_PARAMLIST:params dosPuntos TBAS:type puntoComa BLQ:blq puntoComa{:
+            Bloque b = (Bloque)blq;
+            Token i = (Token)id;
+            RESULT = type + " " + i.getLex() + " " + params + "\n{\n" + b.getDcl() + b.getVariable() + b.getSent() + "}\n";
+        :};
 
-FORMAL_PARAMLIST ::= parentesisAbierto FORMAL_PARAM parentesisCerrado |;
-FORMAL_PARAM ::= VARLIST dosPuntos TBAS | VARLIST dosPuntos TBAS puntoComa FORMAL_PARAM | error parentesisCerrado;
+FORMAL_PARAMLIST ::= parentesisAbierto FORMAL_PARAM:param parentesisCerrado {: RESULT = "(" + param + ")"; :}
+        |{:RESULT = "";:};
+FORMAL_PARAM ::= VARLIST:list dosPuntos TBAS:type {: RESULT = (String)type + (String)list; :}
+        | VARLIST:list dosPuntos TBAS:type puntoComa FORMAL_PARAM:params {: RESULT = (String)type + (String)list + ", " + (String)params; :}
+        | error parentesisCerrado;
 
 TBAS ::= entero {: RESULT = "int "; :}
         | real{: RESULT = "float "; :};
 
 SENTLIST ::= SENT:sent {:RESULT = sent;:}
-        | SENTLIST SENT;
+        | SENTLIST:list SENT:sent {: RESULT = (String)list + (String)sent; :};
 
 INC ::= hastaArriba | hastaAbajo;
 
@@ -113,7 +135,8 @@ SENT ::= ASIG:asig puntoComa {:RESULT ="\t" + asig + ";\n";:}
         | mientras EXPCOND hacer BLQ
         | repite BLQ hasta EXPCOND puntoComa
         | para identifier asignacion EXP INC EXP hacer BLQ
-		| error puntoComa | error fin;
+		| error puntoComa
+		| error fin;
 
 PROC_CALL ::= identifier SUBPARAMLIST;
 SUBPARAMLIST ::= parentesisAbierto EXPLIST parentesisCerrado |;
@@ -129,8 +152,8 @@ OPARIT ::= suma {:RESULT = "+"; :}
         | division {:RESULT = "/"; :}
         | modulo{:RESULT = "%"; :};
 FACTOR ::= SIMPVALUE:s {:RESULT = s; :}
-        | parentesisAbierto EXP parentesisCerrado
-        | PROC_CALL;
+        | parentesisAbierto EXP:e parentesisCerrado {: RESULT = "(" + e + ")"; :}
+        | PROC_CALL:pc {: RESULT = pc; :};
 
 EXPCOND ::= EXPCOND OPLOG EXPCOND | FACTORCOND;
 OPLOG ::= condO | condY;
