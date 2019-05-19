@@ -13,8 +13,10 @@ end;
 function func ( c:REAL; d:INTEGER):INTEGER;
 begin
 	c := 1 + 2;
+	func := c;
 end;
 
 begin
 	cosas := 3 + 2;
+	func(2,3);
 end.

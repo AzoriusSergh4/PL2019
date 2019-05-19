@@ -22,4 +22,10 @@ public class Bloque {
     public String getSent() {
         return sent;
     }
+
+    public String getAll(){
+        String things = this.dcl + this.variables + this.sent;
+        things = things.replace("\n","\n\t");
+        return things;
+    }
 }

@@ -50,6 +50,7 @@ non terminal INITIAL, PRG, BLQ, DCLLIST, DCL, DEFCTE, CTELIST, SIMPVALUE, DEFVAR
              FORMAL_PARAM, DEFFUN, SENTLIST, SENT, ASIG, EXP, FACTOR, OP, OPARIT, PROC_CALL, SUBPARAMLIST, EXPLIST, EXPCOND, OPLOG, FACTORCOND,
              OPCOMP, INC;
 
+precedence left identifier;
 precedence left condO, condY; 
 precedence left suma, resta;
 precedence left producto, division, modulo;
@@ -112,7 +113,9 @@ DEFPROC ::= procedimiento identifier:id FORMAL_PARAMLIST:params puntoComa BLQ:bl
 DEFFUN ::= funcion identifier:id FORMAL_PARAMLIST:params dosPuntos TBAS:type puntoComa BLQ:blq puntoComa{:
             Bloque b = (Bloque)blq;
             Token i = (Token)id;
-            RESULT = type + " " + i.getLex() + " " + params + "\n{\n" + b.getDcl() + b.getVariable() + b.getSent() + "}\n";
+            String old = i.getLex() + " :=";
+            String block = b.getSent().replaceFirst(old, "return");
+            RESULT = type + i.getLex() + " " + params + "\n{\n" + b.getDcl() + b.getVariable() + block + "}\n";
         :};
 
 FORMAL_PARAMLIST ::= parentesisAbierto FORMAL_PARAM:param parentesisCerrado {: RESULT = "(" + param + ")"; :}
@@ -124,23 +127,30 @@ FORMAL_PARAM ::= VARLIST:list dosPuntos TBAS:type {: RESULT = (String)type + (St
 TBAS ::= entero {: RESULT = "int "; :}
         | real{: RESULT = "float "; :};
 
-SENTLIST ::= SENT:sent {:RESULT = sent;:}
-        | SENTLIST:list SENT:sent {: RESULT = (String)list + (String)sent; :};
+SENTLIST ::= SENT:sent {:RESULT = "\t" + sent;:}
+        | SENTLIST:list SENT:sent {: RESULT = (String)list + "\t" + (String)sent; :};
 
 INC ::= hastaArriba | hastaAbajo;
 
-SENT ::= ASIG:asig puntoComa {:RESULT ="\t" + asig + ";\n";:}
-        | PROC_CALL puntoComa
-        | si EXPCOND entonces BLQ sino BLQ
+SENT ::= ASIG:asig puntoComa {:RESULT = asig + ";\n";:}
+        | PROC_CALL:procall puntoComa {: RESULT = (String)procall + ";\n"; :}
+        | si EXPCOND:expc entonces BLQ:blq1 sino BLQ:blq2{:
+            Bloque b1 = (Bloque)blq1;
+            Bloque b2 = (Bloque)blq2;
+            RESULT = "if(" + (String)expc + "){\n\t" + b1.getAll() + "}else{\n\t" + b2.getAll() + "}\n";
+        :}
         | mientras EXPCOND hacer BLQ
         | repite BLQ hasta EXPCOND puntoComa
         | para identifier asignacion EXP INC EXP hacer BLQ
 		| error puntoComa
 		| error fin;
 
-PROC_CALL ::= identifier SUBPARAMLIST;
-SUBPARAMLIST ::= parentesisAbierto EXPLIST parentesisCerrado |;
-EXPLIST ::= EXP | EXP coma EXPLIST | error parentesisCerrado;
+PROC_CALL ::= identifier:id SUBPARAMLIST:subplist {: Token token = (Token)id; RESULT = token.getLex() + (String)subplist; :};
+SUBPARAMLIST ::= parentesisAbierto EXPLIST:expl parentesisCerrado {:RESULT = "(" + (String)expl + ")";:}
+        |{:RESULT = "()";:};
+EXPLIST ::= EXP:exp {:RESULT = exp;:}
+        | EXP:exp coma EXPLIST:explist2 {:RESULT = (String)exp + "," + (String)explist2;:}
+        | error parentesisCerrado;
 
 ASIG ::= identifier:id asignacion EXP:exp {:Token token = (Token)id; RESULT = token.getLex() + " = " + exp; :};
 EXP ::= EXP:exp1 OP:op EXP:exp2 {:RESULT = exp1 + " " + op + " " + exp2; :}
@@ -155,8 +165,17 @@ FACTOR ::= SIMPVALUE:s {:RESULT = s; :}
         | parentesisAbierto EXP:e parentesisCerrado {: RESULT = "(" + e + ")"; :}
         | PROC_CALL:pc {: RESULT = pc; :};
 
-EXPCOND ::= EXPCOND OPLOG EXPCOND | FACTORCOND;
-OPLOG ::= condO | condY;
-FACTORCOND ::= EXP OPCOMP EXP | parentesisAbierto EXP parentesisCerrado | negacion FACTORCOND | error parentesisCerrado;
-OPCOMP ::= condMenor | condMayor | condMayorIgual | condMenorIgual | igual;
+EXPCOND ::= EXPCOND:expcond OPLOG:oplog EXPCOND:expcond2  {:RESULT = (String)expcond + (String)oplog + (String)expcond2;:}
+        | FACTORCOND:factorcond {:RESULT = factorcond; :};
+OPLOG ::= condO {:RESULT = "||"; :}
+        | condY {:RESULT = "&&"; :};
+FACTORCOND ::= EXP:exp OPCOMP:opcomp EXP:exp2 {:RESULT = (String)exp + (String)opcomp + (String)exp2; :}
+        | parentesisAbierto EXP:exp parentesisCerrado {:RESULT = "(" + (String)exp + ")"; :}
+        | negacion FACTORCOND:factorcond {:RESULT = "!" + (String)factorcond; :}
+        | error parentesisCerrado;
+OPCOMP ::= condMenor {:RESULT = "<"; :}
+        | condMayor {:RESULT = ">"; :}
+        | condMayorIgual {:RESULT = ">="; :}
+        | condMenorIgual {:RESULT = "<="; :}
+        | igual {:RESULT = "=="; :};
 
