@@ -1,0 +1,10 @@
+program test;
+
+const tec = 4; rec = 2;
+
+var a,b,c: INTEGER;
+var d,e,f: REAL;
+
+begin
+	cosas := 3 + 2;
+end.

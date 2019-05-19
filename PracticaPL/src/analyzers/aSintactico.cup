@@ -4,6 +4,7 @@ import java.io.*;
 
 parser code{:
     public Converter c = new Converter();
+    private String globalVariables = "";
     public void syntax_error(Symbol s){
         try{
             Token token = (Token)s.value;
@@ -55,23 +56,43 @@ precedence left producto, division, modulo;
 
 start with INITIAL;
 
-INITIAL ::= PRG {:c.bw.write("Cosassssssss");:};
+INITIAL ::= PRG:txt {:c.bw.write((String)txt);:};
 
-PRG ::= cabecera identifier puntoComa BLQ punto | paquete identifier puntoComa DCLLIST punto | error puntoComa;
-BLQ ::= DCLLIST inicio SENTLIST fin;
-DCLLIST ::= DCLLIST DCL |;
-DCL ::= DEFCTE | DEFVAR | DEFPROC | DEFFUN;
+PRG ::= cabecera identifier puntoComa BLQ:txt punto {:RESULT = txt;:}
+            | paquete identifier puntoComa DCLLIST punto
+            | error puntoComa;
+BLQ ::= DCLLIST:dcl inicio SENTLIST:sent fin{:
+                String blq = "void main ( void )\n{\n" + globalVariables + "\n" + sent + "}";
+                String dcllist = (String)dcl;
+                RESULT = dcllist + "\n" + blq;
+                :};
+DCLLIST ::= DCLLIST:dcllist DCL:dcl {:RESULT = (String)dcllist + (String)dcl; :}
+        |{: RESULT = ""; :};
+DCL ::= DEFCTE:def {: RESULT = def; :}
+        | DEFVAR:vars {: globalVariables = globalVariables + (String)vars; RESULT = "";:}
+        | DEFPROC
+        | DEFFUN;
 
-DEFCTE ::= constant CTELIST | error CTELIST;
-CTELIST ::= identifier igual SIMPVALUE puntoComa
-            | CTELIST identifier igual SIMPVALUE puntoComa
+DEFCTE ::= constant CTELIST:cte {: RESULT = cte; :}
+        | error CTELIST;
+CTELIST ::= identifier:id igual SIMPVALUE:value puntoComa {:
+                Token token = (Token)id;
+                RESULT = "#define " + token.getLex() + " = "  + value + ";\n";
+                :}
+            | CTELIST:list identifier:id igual SIMPVALUE:value puntoComa{:
+                Token token = (Token)id;
+                RESULT = list + "#define " + token.getLex() + " = "  + value + ";\n";
+            :}
 			| error puntoComa;
-SIMPVALUE ::= constanteReal | constanteEntera;
+SIMPVALUE ::= constanteReal:r {:Token token = (Token)r; RESULT = token.getLex(); :}
+            | constanteEntera:i {:Token token = (Token)i; RESULT = token.getLex(); :};
 
-DEFVAR ::= var DEFVARLIST puntoComa;
-DEFVARLIST ::= VARLIST dosPuntos TBAS
-            | DEFVARLIST puntoComa VARLIST dosPuntos TBAS | error puntoComa;
-VARLIST ::= identifier | identifier coma VARLIST;
+DEFVAR ::= var DEFVARLIST:list puntoComa{: RESULT = list + ";\n"; :};
+DEFVARLIST ::= VARLIST:list dosPuntos TBAS:type {: RESULT = "\t" + (String)type + (String)list; :}
+            | DEFVARLIST:deflist puntoComa VARLIST:list dosPuntos TBAS:type {: RESULT = deflist + ";\n" + "\t" + (String)type + (String)list; :}
+            | error puntoComa;
+VARLIST ::= identifier:id {: Token token = (Token)id; RESULT = token.getLex(); :}
+            | identifier:id coma VARLIST:list {: Token token = (Token)id; RESULT = token.getLex() + ", " + list; :};
 
 DEFPROC ::= procedimiento identifier FORMAL_PARAMLIST puntoComa BLQ puntoComa | error puntoComa;
 DEFFUN ::= funcion identifier FORMAL_PARAMLIST dosPuntos TBAS puntoComa BLQ puntoComa;
@@ -79,13 +100,15 @@ DEFFUN ::= funcion identifier FORMAL_PARAMLIST dosPuntos TBAS puntoComa BLQ punt
 FORMAL_PARAMLIST ::= parentesisAbierto FORMAL_PARAM parentesisCerrado |;
 FORMAL_PARAM ::= VARLIST dosPuntos TBAS | VARLIST dosPuntos TBAS puntoComa FORMAL_PARAM | error parentesisCerrado;
 
-TBAS ::= entero | real;
+TBAS ::= entero {: RESULT = "int "; :}
+        | real{: RESULT = "float "; :};
 
-SENTLIST ::= SENT | SENTLIST SENT;
+SENTLIST ::= SENT:sent {:RESULT = sent;:}
+        | SENTLIST SENT;
 
 INC ::= hastaArriba | hastaAbajo;
 
-SENT ::= ASIG puntoComa
+SENT ::= ASIG:asig puntoComa {:RESULT ="\t" + asig + ";\n";:}
         | PROC_CALL puntoComa
         | si EXPCOND entonces BLQ sino BLQ
         | mientras EXPCOND hacer BLQ
@@ -97,11 +120,18 @@ PROC_CALL ::= identifier SUBPARAMLIST;
 SUBPARAMLIST ::= parentesisAbierto EXPLIST parentesisCerrado |;
 EXPLIST ::= EXP | EXP coma EXPLIST | error parentesisCerrado;
 
-ASIG ::= identifier asignacion EXP;
-EXP ::= EXP OP EXP | FACTOR;
-OP ::= OPARIT;
-OPARIT ::= suma | resta | producto | division | modulo;
-FACTOR ::= SIMPVALUE | parentesisAbierto EXP parentesisCerrado | PROC_CALL;
+ASIG ::= identifier:id asignacion EXP:exp {:Token token = (Token)id; RESULT = token.getLex() + " = " + exp; :};
+EXP ::= EXP:exp1 OP:op EXP:exp2 {:RESULT = exp1 + " " + op + " " + exp2; :}
+        | FACTOR:f {:RESULT = f; :};
+OP ::= OPARIT:oparit {:RESULT = oparit; :};
+OPARIT ::= suma {:RESULT = "+"; :}
+        | resta {:RESULT = "-"; :}
+        | producto {:RESULT = "*"; :}
+        | division {:RESULT = "/"; :}
+        | modulo{:RESULT = "%"; :};
+FACTOR ::= SIMPVALUE:s {:RESULT = s; :}
+        | parentesisAbierto EXP parentesisCerrado
+        | PROC_CALL;
 
 EXPCOND ::= EXPCOND OPLOG EXPCOND | FACTORCOND;
 OPLOG ::= condO | condY;

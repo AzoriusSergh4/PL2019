@@ -7,13 +7,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="eacef551-848d-436b-8792-bf6ed30d01b4" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PracticaPL/out/artifacts/PL2019_jar/PL2019.jar" beforeDir="false" afterPath="$PROJECT_DIR$/PracticaPL/out/artifacts/PL2019_jar/PL2019.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PracticaPL/out/production/PL2019/analyzers/Analizador.class" beforeDir="false" afterPath="$PROJECT_DIR$/PracticaPL/out/production/PL2019/analyzers/Analizador.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PracticaPL/out/production/PL2019/META-INF/PL2019.kotlin_module" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/PracticaPL/out/production/PL2019/analyzers/aSintactico.cup" beforeDir="false" afterPath="$PROJECT_DIR$/PracticaPL/out/production/PL2019/analyzers/aSintactico.cup" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PracticaPL/out/production/PL2019/analyzers/parser$CUP$parser$actions.class" beforeDir="false" afterPath="$PROJECT_DIR$/PracticaPL/out/production/PL2019/analyzers/parser$CUP$parser$actions.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PracticaPL/out/production/PL2019/analyzers/parser.class" beforeDir="false" afterPath="$PROJECT_DIR$/PracticaPL/out/production/PL2019/analyzers/parser.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PracticaPL/pruebas/PL2019.jar" beforeDir="false" afterPath="$PROJECT_DIR$/PracticaPL/pruebas/PL2019.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PracticaPL/pruebas/texto.txt" beforeDir="false" afterPath="$PROJECT_DIR$/PracticaPL/pruebas/texto.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PracticaPL/src/analyzers/Analizador.java" beforeDir="false" afterPath="$PROJECT_DIR$/PracticaPL/src/analyzers/Analizador.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PracticaPL/src/analyzers/aSintactico.cup" beforeDir="false" afterPath="$PROJECT_DIR$/PracticaPL/src/analyzers/aSintactico.cup" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PracticaPL/src/analyzers/parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/PracticaPL/src/analyzers/parser.java" afterDir="false" />
     </list>
@@ -31,17 +31,24 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PracticaPL/src/analyzers/parser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="244">
-              <caret line="433" column="34" selection-start-line="433" selection-start-column="34" selection-end-line="433" selection-end-column="34" />
+            <state relative-caret-position="142">
+              <caret line="534" column="70" selection-start-line="534" selection-start-column="70" selection-end-line="534" selection-end-column="70" />
+              <folding>
+                <element signature="e#19168#19169#0" expanded="true" />
+                <element signature="e#19223#19224#0" expanded="true" />
+                <element signature="e#21228#21282#1" expanded="true" />
+                <element signature="e#21403#21404#0" expanded="true" />
+                <element signature="e#21433#21434#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PracticaPL/src/analyzers/Analizador.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="290">
-              <caret line="27" selection-start-line="27" selection-end-line="27" />
+            <state relative-caret-position="307">
+              <caret line="28" column="42" selection-start-line="28" selection-start-column="42" selection-end-line="28" selection-end-column="42" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -58,11 +65,29 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/PracticaPL/src/analyzers/aSintactico.cup">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
+            <state relative-caret-position="374">
+              <caret line="91" column="113" selection-start-line="91" selection-start-column="113" selection-end-line="91" selection-end-column="113" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/PracticaPL/src/analyzers/Token.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="34">
+              <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/PracticaPL/src/analyzers/aLexico.flex">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="51">
+              <caret line="21" column="67" selection-start-line="21" selection-start-column="67" selection-end-line="21" selection-end-column="67" />
             </state>
           </provider>
         </entry>
@@ -104,7 +129,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="85" />
     <option name="y" value="25" />
     <option name="width" value="1750" />
@@ -210,10 +235,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="7" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25973153" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16174497" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -230,7 +255,7 @@
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.3286119" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info active="true" anchor="bottom" id="Messages" order="10" visible="true" weight="0.3286119" />
+      <window_info anchor="bottom" id="Messages" order="10" weight="0.3286119" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -242,13 +267,24 @@
     </layout>
   </component>
   <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.flex" />
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.cup" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/PracticaPL/src/analyzers/aSintactico.cup">
+    <entry file="file://$PROJECT_DIR$/PracticaPL/src/analyzers/sym.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
+        <state relative-caret-position="102">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PracticaPL/src/analyzers/Analizador.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="307">
+          <caret line="28" column="42" selection-start-line="28" selection-start-column="42" selection-end-line="28" selection-end-column="42" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -259,27 +295,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PracticaPL/src/analyzers/sym.java">
+    <entry file="file://$PROJECT_DIR$/PracticaPL/src/analyzers/Token.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+        <state relative-caret-position="34">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PracticaPL/src/analyzers/aLexico.flex">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="21" column="67" selection-start-line="21" selection-start-column="67" selection-end-line="21" selection-end-column="67" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/PracticaPL/src/analyzers/parser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="244">
-          <caret line="433" column="34" selection-start-line="433" selection-start-column="34" selection-end-line="433" selection-end-column="34" />
+        <state relative-caret-position="142">
+          <caret line="534" column="70" selection-start-line="534" selection-start-column="70" selection-end-line="534" selection-end-column="70" />
+          <folding>
+            <element signature="e#19168#19169#0" expanded="true" />
+            <element signature="e#19223#19224#0" expanded="true" />
+            <element signature="e#21228#21282#1" expanded="true" />
+            <element signature="e#21403#21404#0" expanded="true" />
+            <element signature="e#21433#21434#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PracticaPL/src/analyzers/Analizador.java">
+    <entry file="file://$PROJECT_DIR$/PracticaPL/src/analyzers/aSintactico.cup">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="290">
-          <caret line="27" selection-start-line="27" selection-end-line="27" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="374">
+          <caret line="91" column="113" selection-start-line="91" selection-start-column="113" selection-end-line="91" selection-end-column="113" />
         </state>
       </provider>
     </entry>
