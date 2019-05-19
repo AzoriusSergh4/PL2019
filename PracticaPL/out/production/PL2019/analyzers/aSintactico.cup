@@ -58,13 +58,12 @@ start with INITIAL;
 
 INITIAL ::= PRG:txt {:c.bw.write((String)txt);:};
 
-PRG ::= cabecera identifier puntoComa BLQ:txt punto {:RESULT = txt;:}
+PRG ::= cabecera identifier puntoComa BLQ:blq punto {: Bloque b = (Bloque)blq; RESULT = b.getDcl() + "void main ( void )\n{\n" + b.getVariable() + b.getSent() + "\n}"; :}
             | paquete identifier puntoComa DCLLIST punto
             | error puntoComa;
 BLQ ::= DCLLIST:dcl inicio SENTLIST:sent fin{:
-                String blq = "void main ( void )\n{\n" + globalVariables + "\n" + sent + "}";
-                String dcllist = (String)dcl;
-                RESULT = dcllist + "\n" + blq;
+                Bloque blq = new Bloque((String)dcl, globalVariables, (String)sent);
+                RESULT = blq;
                 :};
 DCLLIST ::= DCLLIST:dcllist DCL:dcl {:RESULT = (String)dcllist + (String)dcl; :}
         |{: RESULT = ""; :};
