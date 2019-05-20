@@ -1111,7 +1111,16 @@ class CUP$parser$actions {
 		int subplistleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int subplistright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object subplist = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 Token token = (Token)id; RESULT = token.getLex() + "(" + (String)subplist + ")"; 
+		
+            Token token = (Token)id;
+            String l = (String)subplist;
+            if(l.length()>0){
+                if(l.charAt(0) == '(' && l.charAt(l.length()-1) == ')'){
+                    l = l.substring(1,l.length()-1);
+                }
+            }
+            RESULT = token.getLex() + "(" + l + ")";
+        
               CUP$parser$result = parser.getSymbolFactory().newSymbol("PROC_CALL",23, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1123,7 +1132,7 @@ class CUP$parser$actions {
 		int explleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int explright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object expl = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		RESULT = (String)expl;
+		RESULT = "(" + (String)expl + ")";
               CUP$parser$result = parser.getSymbolFactory().newSymbol("SUBPARAMLIST",24, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

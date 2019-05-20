@@ -5,7 +5,7 @@ int PruebaAdicional
 {
 	return 5;
 }
-int funcion (int var1, var2, float var3)
+int funcion (int var1, int var2, float var3)
 {
 	int aux1, var7, var6, v1, var2;
 	float aux3, aux4, var4, var8;
@@ -13,7 +13,7 @@ int funcion (int var1, var2, float var3)
 	a = PruebaAdicional + 3;
 	aux1 = var1;
 	aux3 = var3;
-	var2 = funcion2i + j,5,3 + 8;
+	var2 = funcion2(i + j,5,3 + 8);
 	var4 = 5 * 4 + 3 / 8 + (5 + 4) * 9;
 	acumulador_total_2 = 'hola que tal?';
 	var6 = 'hola que tal '' me llamo Marcos '' y vivo en Madrid';
@@ -27,11 +27,11 @@ void proc (int a, float b)
 	d = 0;
 	e = 0;
 	c = a * b;
-	c = procfunciona,b,e * a + b;
+	c = proc(funcion(a,b,e * a + b));
 }
 void main ( void )
 {
 	int i, j;
 	float k, l;
-	f = funcioni,j,k * l;
+	f = funcion(i,j,k * l);
 }

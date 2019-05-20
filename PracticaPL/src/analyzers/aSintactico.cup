@@ -173,8 +173,17 @@ SENT ::= ASIG:asig puntoComa {:RESULT = asig + ";\n";:}
 		| error puntoComa
 		| error fin;
 
-PROC_CALL ::= identifier:id SUBPARAMLIST:subplist {: Token token = (Token)id; RESULT = token.getLex() + "(" + (String)subplist + ")"; :};
-SUBPARAMLIST ::= parentesisAbierto EXPLIST:expl parentesisCerrado {:RESULT = (String)expl;:}
+PROC_CALL ::= identifier:id SUBPARAMLIST:subplist {:
+            Token token = (Token)id;
+            String l = (String)subplist;
+            if(l.length()>0){
+                if(l.charAt(0) == '(' && l.charAt(l.length()-1) == ')'){
+                    l = l.substring(1,l.length()-1);
+                }
+            }
+            RESULT = token.getLex() + "(" + l + ")";
+        :};
+SUBPARAMLIST ::= parentesisAbierto EXPLIST:expl parentesisCerrado {:RESULT = "(" + (String)expl + ")";:}
         |{:RESULT = "";:};
 EXPLIST ::= EXP:exp {:RESULT = exp;:}
         | EXP:exp coma EXPLIST:explist2 {:RESULT = (String)exp + "," + (String)explist2;:}
