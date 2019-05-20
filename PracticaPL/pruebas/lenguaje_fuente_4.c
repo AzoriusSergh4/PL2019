@@ -1,11 +1,11 @@
 // Libreria: prueba4
-void prueba1 (int i1, i2, i3, float r1, int i4, float r2, r3)
+void prueba1 (int i1, int i2, int i3, float r1, int i4, float r2, float r3)
 {
 	int a, b, c, d;
 	float e, f, g;
 	f = e * g;
 }
-int prueba2 (int v1, v2, float v3, v4)
+int prueba2 (int v1, int v2, float v3, float v4)
 {
 	int aux1, aux2, aux3, aux4;
 	int aux6, aux7;

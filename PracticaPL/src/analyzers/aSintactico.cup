@@ -124,8 +124,16 @@ DEFFUN ::= funcion identifier:id FORMAL_PARAMLIST:params dosPuntos TBAS:type pun
 
 FORMAL_PARAMLIST ::= parentesisAbierto FORMAL_PARAM:param parentesisCerrado {: RESULT = "(" + param + ")"; :}
         |{:RESULT = "";:};
-FORMAL_PARAM ::= VARLIST:list dosPuntos TBAS:type {: RESULT = (String)type + (String)list; :}
-        | VARLIST:list dosPuntos TBAS:type puntoComa FORMAL_PARAM:params {: RESULT = (String)type + (String)list + ", " + (String)params; :}
+FORMAL_PARAM ::= VARLIST:list dosPuntos TBAS:type {:
+            String l = (String)list;
+            l = l.replace(", ", ", "+(String)type);
+            RESULT = (String)type + l;
+        :}
+        | VARLIST:list dosPuntos TBAS:type puntoComa FORMAL_PARAM:params {:
+            String l = (String)list;
+            l = l.replace(", ", ", "+(String)type);
+            RESULT = (String)type + l + ", " + (String)params;
+        :}
         | error parentesisCerrado;
 
 TBAS ::= entero {: RESULT = "int "; :}
@@ -147,20 +155,20 @@ SENT ::= ASIG:asig puntoComa {:RESULT = asig + ";\n";:}
         | mientras:whle EXPCOND:expcond hacer BLQ:blq {:
             Token token = (Token)whle;
             Bloque bl = (Bloque)blq;
-            RESULT = token.getLex() + "(" + (String)expcond + ")" + "{" + bl.getAll() + "}";
+            RESULT = token.getLex() + "(" + (String)expcond + ")" + "{\n\t" + bl.getAll() + "}\n";
         :}
         | repite BLQ:blq hasta:unt EXPCOND:expcond puntoComa {:
             Token token = (Token)unt;
             Bloque bl = (Bloque)blq;
-            RESULT = "do" + "{" + bl.getAll() + "}" + token.getLex() + "(" + (String)expcond +")";
+            RESULT = "do" + "{\n\t" + bl.getAll() + "}" + token.getLex() + "(" + (String)expcond +")\n";
         :}
         | para identifier:id asignacion EXP:exp1 INC:incremento EXP:exp2 hacer BLQ:bloque {:
             Token token = (Token)id;
             Bloque b = (Bloque)bloque;
             if ((Boolean)incremento){
-                RESULT = "for(" + token.getLex() + "=" + (String)exp1 + ";" + token.getLex() + "<" + (String)exp2 + "+1" + ";" + token.getLex()+ "=" + token.getLex() + "+1" + ")" + "{" + b.getAll() + "}";
+                RESULT = "for(" + token.getLex() + "=" + (String)exp1 + ";" + token.getLex() + "<" + (String)exp2 + "+1" + ";" + token.getLex()+ "=" + token.getLex() + "+1" + ")" + "{\n\t" + b.getAll() + "}\n";
             } else {
-                RESULT = "for(" + token.getLex() + "=" + (String)exp1 + ";" + token.getLex() + ">" + (String)exp2 + "-1" + ";" + token.getLex()+ "=" + token.getLex() + "-1" + ")" + "{" + b.getAll() + "}";
+                RESULT = "for(" + token.getLex() + "=" + (String)exp1 + ";" + token.getLex() + ">" + (String)exp2 + "-1" + ";" + token.getLex()+ "=" + token.getLex() + "-1" + ")" + "{\n\t" + b.getAll() + "}\n";
             };:}
 		| error puntoComa
 		| error fin;

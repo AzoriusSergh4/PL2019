@@ -859,7 +859,11 @@ class CUP$parser$actions {
 		int typeleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int typeright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object type = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 RESULT = (String)type + (String)list; 
+		
+            String l = (String)list;
+            l = l.replace(", ", ", "+(String)type);
+            RESULT = (String)type + l;
+        
               CUP$parser$result = parser.getSymbolFactory().newSymbol("FORMAL_PARAM",14, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -877,7 +881,11 @@ class CUP$parser$actions {
 		int paramsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int paramsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object params = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 RESULT = (String)type + (String)list + ", " + (String)params; 
+		
+            String l = (String)list;
+            l = l.replace(", ", ", "+(String)type);
+            RESULT = (String)type + l + ", " + (String)params;
+        
               CUP$parser$result = parser.getSymbolFactory().newSymbol("FORMAL_PARAM",14, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1016,7 +1024,7 @@ class CUP$parser$actions {
 		
             Token token = (Token)whle;
             Bloque bl = (Bloque)blq;
-            RESULT = token.getLex() + "(" + (String)expcond + ")" + "{" + bl.getAll() + "}";
+            RESULT = token.getLex() + "(" + (String)expcond + ")" + "{\n\t" + bl.getAll() + "}\n";
         
               CUP$parser$result = parser.getSymbolFactory().newSymbol("SENT",17, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1038,7 +1046,7 @@ class CUP$parser$actions {
 		
             Token token = (Token)unt;
             Bloque bl = (Bloque)blq;
-            RESULT = "do" + "{" + bl.getAll() + "}" + token.getLex() + "(" + (String)expcond +")";
+            RESULT = "do" + "{\n\t" + bl.getAll() + "}" + token.getLex() + "(" + (String)expcond +")\n";
         
               CUP$parser$result = parser.getSymbolFactory().newSymbol("SENT",17, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1067,9 +1075,9 @@ class CUP$parser$actions {
             Token token = (Token)id;
             Bloque b = (Bloque)bloque;
             if ((Boolean)incremento){
-                RESULT = "for(" + token.getLex() + "=" + (String)exp1 + ";" + token.getLex() + "<" + (String)exp2 + "+1" + ";" + token.getLex()+ "=" + token.getLex() + "+1" + ")" + "{" + b.getAll() + "}";
+                RESULT = "for(" + token.getLex() + "=" + (String)exp1 + ";" + token.getLex() + "<" + (String)exp2 + "+1" + ";" + token.getLex()+ "=" + token.getLex() + "+1" + ")" + "{\n\t" + b.getAll() + "}\n";
             } else {
-                RESULT = "for(" + token.getLex() + "=" + (String)exp1 + ";" + token.getLex() + ">" + (String)exp2 + "-1" + ";" + token.getLex()+ "=" + token.getLex() + "-1" + ")" + "{" + b.getAll() + "}";
+                RESULT = "for(" + token.getLex() + "=" + (String)exp1 + ";" + token.getLex() + ">" + (String)exp2 + "-1" + ";" + token.getLex()+ "=" + token.getLex() + "-1" + ")" + "{\n\t" + b.getAll() + "}\n";
             };
               CUP$parser$result = parser.getSymbolFactory().newSymbol("SENT",17, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-7)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }

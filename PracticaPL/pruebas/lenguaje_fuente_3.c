@@ -8,9 +8,11 @@ void prueba (int v1, float v2, int v3, float v4)
 	int varFLujo;
 	if(v1>v2&&v4<=v2){
 		c = a + b;
-		while(c<d){	c = c + 1;
+		while(c<d){
+			c = c + 1;
 			a = a + a;
-		}}else{
+		}
+	}else{
 		if(v1==0){
 			b = b + 1;
 		}else{

@@ -6,7 +6,8 @@ void main ( void )
 	resultado = 100;
 	if(id==aux){
 		resultado = ((resultado / 50) * 30) - 500 + 10;
-	}else{
+	}
+else{
 		resultado = 10101110;
 	}
 }
