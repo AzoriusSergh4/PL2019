@@ -1,0 +1,11 @@
+program test6ok;
+
+var contador, x : INTEGER;
+
+begin
+    contador:= 0;
+    for x:=10 downto contador do 
+    begin
+        x:= x - 1;
+    end
+end.

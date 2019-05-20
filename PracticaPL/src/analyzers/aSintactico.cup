@@ -44,7 +44,7 @@ action code{:
 terminal cabecera, igual, identifier, constanteEntera, punto, puntoComa, dosPuntos, coma, parentesisAbierto, parentesisCerrado,
             fin, var, constanteReal, real, inicio, constant, entero, funcion, procedimiento, asignacion, suma, resta, producto, division,
             modulo, condMayor, condMenor, condMenorIgual, condMayorIgual, negacion, si, sino, entonces, mientras, hacer, repite, hasta,
-            para, hastaArriba, hastaAbajo, paquete, condO, condY;
+            para, hastaArriba, hastaAbajo, paquete, condO, condY, constanteString;
 
 non terminal INITIAL, PRG, BLQ, DCLLIST, DCL, DEFCTE, CTELIST, SIMPVALUE, DEFVAR, DEFVARLIST, VARLIST, TBAS, DEFPROC, FORMAL_PARAMLIST,
              FORMAL_PARAM, DEFFUN, SENTLIST, SENT, ASIG, EXP, FACTOR, OP, OPARIT, PROC_CALL, SUBPARAMLIST, EXPLIST, EXPCOND, OPLOG, FACTORCOND,
@@ -60,11 +60,14 @@ start with INITIAL;
 INITIAL ::= PRG:txt {:c.bw.write((String)txt);:};
 
 PRG ::= cabecera identifier puntoComa BLQ:blq punto {: Bloque b = (Bloque)blq; RESULT = b.getDcl() + "void main ( void )\n{\n" + b.getVariable() + b.getSent() + "}"; :}
-            | paquete identifier puntoComa DCLLIST punto
+            | paquete identifier:id puntoComa DCLLIST:list punto {:
+                Token token = (Token)id;
+                DCLList l = (DCLList)list;
+                RESULT = "// Libreria: " + token.getLex() + "\n" + l.getVarslist() + l.getDcllists(); :}
             | error puntoComa;
 BLQ ::= DCLLIST:dcl inicio SENTLIST:sent fin{:
                 DCLList d = (DCLList)dcl;
-                Bloque blq = new Bloque(d.getDcllists(), d.getVarslist(), (String)sent);
+                Bloque blq = new Bloque(d.getDcllists(), d.getTabbedVarslist(), (String)sent);
                 RESULT = blq;
                 :};
 DCLLIST ::= DCLLIST:dcllist DCL:dcl {:
@@ -95,11 +98,12 @@ CTELIST ::= identifier:id igual SIMPVALUE:value puntoComa {:
             :}
 			| error puntoComa;
 SIMPVALUE ::= constanteReal:r {:Token token = (Token)r; RESULT = token.getLex(); :}
-            | constanteEntera:i {:Token token = (Token)i; RESULT = token.getLex(); :};
+            | constanteEntera:i {:Token token = (Token)i; RESULT = token.getLex(); :}
+            | constanteString:i {:Token token = (Token)i; RESULT = token.getLex(); :};
 
 DEFVAR ::= var DEFVARLIST:list puntoComa{: RESULT = list + ";\n"; :};
-DEFVARLIST ::= VARLIST:list dosPuntos TBAS:type {: RESULT = "\t" + (String)type + (String)list; :}
-            | DEFVARLIST:deflist puntoComa VARLIST:list dosPuntos TBAS:type {: RESULT = deflist + ";\n" + "\t" + (String)type + (String)list; :}
+DEFVARLIST ::= VARLIST:list dosPuntos TBAS:type {: RESULT = (String)type + (String)list; :}
+            | DEFVARLIST:deflist puntoComa VARLIST:list dosPuntos TBAS:type {: RESULT = deflist + ";\n" + (String)type + (String)list; :}
             | error puntoComa;
 VARLIST ::= identifier:id {: Token token = (Token)id; RESULT = token.getLex(); :}
             | identifier:id coma VARLIST:list {: Token token = (Token)id; RESULT = token.getLex() + ", " + list; :};
@@ -113,7 +117,7 @@ DEFPROC ::= procedimiento identifier:id FORMAL_PARAMLIST:params puntoComa BLQ:bl
 DEFFUN ::= funcion identifier:id FORMAL_PARAMLIST:params dosPuntos TBAS:type puntoComa BLQ:blq puntoComa{:
             Bloque b = (Bloque)blq;
             Token i = (Token)id;
-            String old = i.getLex() + " :=";
+            String old = i.getLex() + " =";
             String block = b.getSent().replaceFirst(old, "return");
             RESULT = type + i.getLex() + " " + params + "\n{\n" + b.getDcl() + b.getVariable() + block + "}\n";
         :};
@@ -130,7 +134,8 @@ TBAS ::= entero {: RESULT = "int "; :}
 SENTLIST ::= SENT:sent {:RESULT = "\t" + sent;:}
         | SENTLIST:list SENT:sent {: RESULT = (String)list + "\t" + (String)sent; :};
 
-INC ::= hastaArriba | hastaAbajo;
+INC ::= hastaArriba {: RESULT = true; :}
+        | hastaAbajo {: RESULT = false; :};
 
 SENT ::= ASIG:asig puntoComa {:RESULT = asig + ";\n";:}
         | PROC_CALL:procall puntoComa {: RESULT = (String)procall + ";\n"; :}
@@ -139,15 +144,30 @@ SENT ::= ASIG:asig puntoComa {:RESULT = asig + ";\n";:}
             Bloque b2 = (Bloque)blq2;
             RESULT = "if(" + (String)expc + "){\n\t" + b1.getAll() + "}else{\n\t" + b2.getAll() + "}\n";
         :}
-        | mientras EXPCOND hacer BLQ
-        | repite BLQ hasta EXPCOND puntoComa
-        | para identifier asignacion EXP INC EXP hacer BLQ
+        | mientras:whle EXPCOND:expcond hacer BLQ:blq {:
+            Token token = (Token)whle;
+            Bloque bl = (Bloque)blq;
+            RESULT = token.getLex() + "(" + (String)expcond + ")" + "{" + bl.getAll() + "}";
+        :}
+        | repite BLQ:blq hasta:unt EXPCOND:expcond puntoComa {:
+            Token token = (Token)unt;
+            Bloque bl = (Bloque)blq;
+            RESULT = "do" + "{" + bl.getAll() + "}" + token.getLex() + "(" + (String)expcond +")";
+        :}
+        | para identifier:id asignacion EXP:exp1 INC:incremento EXP:exp2 hacer BLQ:bloque {:
+            Token token = (Token)id;
+            Bloque b = (Bloque)bloque;
+            if ((Boolean)incremento){
+                RESULT = "for(" + token.getLex() + "=" + (String)exp1 + ";" + token.getLex() + "<" + (String)exp2 + "+1" + ";" + token.getLex()+ "=" + token.getLex() + "+1" + ")" + "{" + b.getAll() + "}";
+            } else {
+                RESULT = "for(" + token.getLex() + "=" + (String)exp1 + ";" + token.getLex() + ">" + (String)exp2 + "-1" + ";" + token.getLex()+ "=" + token.getLex() + "-1" + ")" + "{" + b.getAll() + "}";
+            };:}
 		| error puntoComa
 		| error fin;
 
-PROC_CALL ::= identifier:id SUBPARAMLIST:subplist {: Token token = (Token)id; RESULT = token.getLex() + (String)subplist; :};
-SUBPARAMLIST ::= parentesisAbierto EXPLIST:expl parentesisCerrado {:RESULT = "(" + (String)expl + ")";:}
-        |{:RESULT = "()";:};
+PROC_CALL ::= identifier:id SUBPARAMLIST:subplist {: Token token = (Token)id; RESULT = token.getLex() + "(" + (String)subplist + ")"; :};
+SUBPARAMLIST ::= parentesisAbierto EXPLIST:expl parentesisCerrado {:RESULT = (String)expl;:}
+        |{:RESULT = "";:};
 EXPLIST ::= EXP:exp {:RESULT = exp;:}
         | EXP:exp coma EXPLIST:explist2 {:RESULT = (String)exp + "," + (String)explist2;:}
         | error parentesisCerrado;
@@ -163,7 +183,7 @@ OPARIT ::= suma {:RESULT = "+"; :}
         | modulo{:RESULT = "%"; :};
 FACTOR ::= SIMPVALUE:s {:RESULT = s; :}
         | parentesisAbierto EXP:e parentesisCerrado {: RESULT = "(" + e + ")"; :}
-        | PROC_CALL:pc {: RESULT = pc; :};
+        | identifier:id SUBPARAMLIST:params {: Token token = (Token)id; RESULT = token.getLex() + params; :};
 
 EXPCOND ::= EXPCOND:expcond OPLOG:oplog EXPCOND:expcond2  {:RESULT = (String)expcond + (String)oplog + (String)expcond2;:}
         | FACTORCOND:factorcond {:RESULT = factorcond; :};

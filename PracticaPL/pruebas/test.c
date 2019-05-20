@@ -4,10 +4,10 @@ void proc (float c, int d)
 {
 	c = 1 + 2;
 }
-int func (float c, int d)
+int func (float c, e, int d)
 {
 	c = 1 + 2;
-	func = c();
+	return c;
 }
 void main ( void )
 {

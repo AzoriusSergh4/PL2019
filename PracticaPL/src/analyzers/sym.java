@@ -23,6 +23,7 @@ public class sym {
   public static final int identifier = 4;
   public static final int inicio = 16;
   public static final int procedimiento = 20;
+  public static final int constanteString = 45;
   public static final int real = 15;
   public static final int si = 32;
   public static final int mientras = 35;
@@ -98,7 +99,8 @@ public class sym {
   "hastaAbajo",
   "paquete",
   "condO",
-  "condY"
+  "condY",
+  "constanteString"
   };
 }
 

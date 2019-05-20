@@ -51,6 +51,7 @@ Espacios = [\n\r\t ]+
 
 
 /*Identificadores y constantes*/
+"'"([^"\'"]+|"\'\'")*"'" {return new java_cup.runtime.Symbol(sym.constanteString, new Token(yytext(), yyline, yycolumn));}
 [a-zA-Z]+([a-z]*|[A-Z]*|[0-9]*|"_")* {return new java_cup.runtime.Symbol(sym.identifier, new Token(yytext(), yyline, yycolumn));}
 [+-]?[0-9]+ {return new java_cup.runtime.Symbol(sym.constanteEntera, new Token(yytext(), yyline, yycolumn));}
 [+-]?(([0-9]+"."[0-9]+)|([0-9]+[eE][0-9]+)|([0-9]+"."[0-9]+[eE][+-]?[0-9]+))+ {return new java_cup.runtime.Symbol(sym.constanteReal, new Token(yytext(), yyline, yycolumn));}
@@ -66,7 +67,7 @@ Espacios = [\n\r\t ]+
 {Espacios} {}
 
 /*comentarios*/
-"\{".*"\}" {System.out.println("Linea reconocida");}
-"\(\*" [.\n\r] "\*\)" {System.out.println("Varias Linea reconocida");}
+"\{".*"\}" {}
+"\(\*" [^]* "\*\)" {}
 
 . {System.out.println("Error lexico: " + yytext() + " Linea: " + yyline+ " Columna: " + yycolumn); TError error = new TError(yytext(), "Error lexico", "Simbolo incorrecto", yyline, yycolumn); }

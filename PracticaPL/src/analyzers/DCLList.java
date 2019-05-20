@@ -17,6 +17,13 @@ public class DCLList {
         return varslist;
     }
 
+    public String getTabbedVarslist(){
+        String s = this.varslist;
+        s = s.replace("\n","\n\t");
+        s = "\t" + s;
+        return s.substring(0,s.length()-1);
+    }
+
     public void setDcllists(String dcllists) {
         this.dcllists = dcllists;
     }

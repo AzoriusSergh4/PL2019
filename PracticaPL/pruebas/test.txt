@@ -10,7 +10,7 @@ begin
 	c := 1 + 2;
 end;
 
-function func ( c:REAL; d:INTEGER):INTEGER;
+function func ( c,e:REAL; d:INTEGER):INTEGER;
 begin
 	c := 1 + 2;
 	func := c;
