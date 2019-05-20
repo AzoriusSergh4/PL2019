@@ -90,11 +90,11 @@ DEFCTE ::= constant CTELIST:cte {: RESULT = cte; :}
         | error CTELIST;
 CTELIST ::= identifier:id igual SIMPVALUE:value puntoComa {:
                 Token token = (Token)id;
-                RESULT = "#define " + token.getLex() + " = "  + value + ";\n";
+                RESULT = "#define " + token.getLex() + " "  + value + ";\n";
                 :}
             | CTELIST:list identifier:id igual SIMPVALUE:value puntoComa{:
                 Token token = (Token)id;
-                RESULT = list + "#define " + token.getLex() + " = "  + value + ";\n";
+                RESULT = list + "#define " + token.getLex() + " "  + value + ";\n";
             :}
 			| error puntoComa;
 SIMPVALUE ::= constanteReal:r {:Token token = (Token)r; RESULT = token.getLex(); :}
@@ -123,7 +123,7 @@ DEFFUN ::= funcion identifier:id FORMAL_PARAMLIST:params dosPuntos TBAS:type pun
         :};
 
 FORMAL_PARAMLIST ::= parentesisAbierto FORMAL_PARAM:param parentesisCerrado {: RESULT = "(" + param + ")"; :}
-        |{:RESULT = "";:};
+        |{:RESULT = "( void )";:};
 FORMAL_PARAM ::= VARLIST:list dosPuntos TBAS:type {:
             String l = (String)list;
             l = l.replace(", ", ", "+(String)type);

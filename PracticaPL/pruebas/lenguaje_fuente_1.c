@@ -1,7 +1,7 @@
-#define cte1 = 0;
-#define cte2 = 21;
-#define cte = 98;
-int PruebaAdicional 
+#define cte1 0;
+#define cte2 21;
+#define cte 98;
+int PruebaAdicional ( void )
 {
 	return 5;
 }

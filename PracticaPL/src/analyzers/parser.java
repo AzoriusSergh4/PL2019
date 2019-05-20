@@ -617,7 +617,7 @@ class CUP$parser$actions {
 		Object value = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
                 Token token = (Token)id;
-                RESULT = "#define " + token.getLex() + " = "  + value + ";\n";
+                RESULT = "#define " + token.getLex() + " "  + value + ";\n";
                 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("CTELIST",6, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -638,7 +638,7 @@ class CUP$parser$actions {
 		Object value = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
                 Token token = (Token)id;
-                RESULT = list + "#define " + token.getLex() + " = "  + value + ";\n";
+                RESULT = list + "#define " + token.getLex() + " "  + value + ";\n";
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("CTELIST",6, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -844,7 +844,7 @@ class CUP$parser$actions {
           case 30: // FORMAL_PARAMLIST ::= 
             {
               Object RESULT =null;
-		RESULT = "";
+		RESULT = "( void )";
               CUP$parser$result = parser.getSymbolFactory().newSymbol("FORMAL_PARAMLIST",13, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
